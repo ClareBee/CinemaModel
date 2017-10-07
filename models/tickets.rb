@@ -65,7 +65,7 @@ class Ticket
     customer = SqlRunner.run(sql, values).first
     return Customer.new(customer)
   end
-#what's happening when we pass customer into Customer.new?
+#what is really happening when we pass customer into Customer.new?
   def films()
     sql = "SELECT * FROM films WHERE id = $1;"
     values = [@film_id]

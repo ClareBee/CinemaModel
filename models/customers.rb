@@ -90,7 +90,7 @@ class Customer
     if screening.capacity > 0
     screening.capacity -= 1
     screening.update
-    #screening.update_capacity
+    #need to test if it need this function instead - screening.update_capacity
     @funds -= film.price
     update()
     sql = "INSERT INTO tickets (
@@ -100,7 +100,7 @@ class Customer
       $1, $2
     ) RETURNING id;"
     values = [film.id, @id]
-    #values = [screening.film_id, @id]
+    #if i remove film, can i access the film id like this? values = [screening.film_id, @id]
     result = SqlRunner.run(sql, values).first
     id = result['id'].to_i
     puts "The customer now has £#{@funds}"

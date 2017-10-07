@@ -88,6 +88,7 @@ class Screening
     return @capacity
   end
 
+#functions still to write
   def most_popular_film()
   end
 
