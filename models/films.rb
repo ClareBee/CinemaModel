@@ -74,11 +74,6 @@ class Film
     return result.map {|film| Film.new(film).title}
   end
 
-  def self.available_genres
-    sql = "SELECT"
-  end
-
-
   def customers()
     sql = "SELECT customers.* FROM customers INNER JOIN tickets ON customers.id = tickets.customer_id WHERE film_id = $1;"
     values = [@id]
@@ -86,18 +81,11 @@ class Film
     return results.map {|customer| Customer.new(customer)}
   end
 
-  def matching_time_slots()
-    sql = "SELECT time_slots.* FROM time_slots INNER JOIN screenings ON time_slots.id = screenings.time_slot_id WHERE film_id = $1;"
-    values = [@id]
-    results = SqlRunner.run(sql, values)
-    return results.map {|slot| TimeSlot.new(slot)}
-  end
-
   def matching_days()
-    sql = "SELECT time_slots.* FROM time_slots INNER JOIN screenings ON time_slots.id = screenings.time_slot_id WHERE film_id = $1;"
+    sql = "SELECT screenings.* FROM screenings WHERE film_id = $1;"
     values = [@id]
     results = SqlRunner.run(sql, values)
-    return results.map {|slot| TimeSlot.new(slot).day_of_week}
+    return results.map {|slot| Screening.new(slot).day_of_week}
   end
 
   def audience_size()
@@ -105,10 +93,39 @@ class Film
   end
 
   def screenings()
-    sql = "SELECT screenings.* FROM screenings WHERE screenings.film_id = $1;"
+    sql = "SELECT screenings.* FROM screenings WHERE film_id = $1;"
     values = [@id]
-    result = SqlRunner.run(sql, values).first
-    return result
+    results = SqlRunner.run(sql, values)
+    return results.map{|screen| Screening.new(screen)}
   end
 
+#is there a way in pry to return an array of hashes with film name => day of week?
+
+#on psql this is = SELECT films.title, screenings.* FROM screenings INNER JOIN films ON films.id = screenings.film_id;
+
+def self.all_screenings()
+  sql = "SELECT films.title, screenings.* FROM screenings INNER JOIN films ON films.id = screenings.film_id;"
+  values = []
+  results = SqlRunner.run(sql, values)
+  return results.map {|screen| Screening.new(screen)}
+end
+
+#this returns a hash of unique values, but how do i get rid of the keys?
+
+  def self.all_available_genres
+    sql = "SELECT genre FROM films;"
+    values = []
+    results = SqlRunner.run(sql, values)
+    return results.map.uniq {|film| Film.new(film).genre}
+  end
+
+#how do i return a number off this??
+  def ticket_count
+    sql = "SELECT COUNT(id) FROM tickets WHERE film_id = $1;"
+    values = [@id]
+    return SqlRunner.run(sql, values)
+  end
+#still to write 
+  def popular_screening
+  end
 end

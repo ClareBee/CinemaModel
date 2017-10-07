@@ -1,43 +1,48 @@
 require_relative ("../db/sql_runner")
-require_relative ("./time_slots")
 require_relative ("./films")
 
 class Screening
 
   attr_reader :id
-  attr_accessor :time_slot_id, :film_id, :capacity
+  attr_accessor :film_id, :capacity, :time_of_day, :hour, :day_of_week
 
   def initialize(details)
     @id = details['id'].to_i
-    @time_slot_id = details['time_slot_id'].to_i
     @film_id = details['film_id'].to_i
     @capacity = details['capacity'].to_i
+    @time_of_day = details['time_of_day']
+    @hour = details['hour']
+    @day_of_week = details['day_of_week']
   end
 
   def save()
     sql = "INSERT INTO screenings (
-    time_slot_id,
     film_id,
-    capacity
+    capacity,
+    time_of_day,
+    hour,
+    day_of_week
     )
     VALUES (
-      $1, $2, $3
+      $1, $2, $3, $4, $5
     )
     RETURNING id;"
-    values = [@time_slot_id, @film_id, @capacity]
+    values = [@film_id, @capacity, @time_of_day, @hour, @day_of_week]
     results = SqlRunner.run(sql, values).first
     @id = results['id'].to_i
   end
 
   def update()
     sql = "UPDATE screenings SET (
-    time_slot_id,
     film_id,
-    capacity
+    capacity,
+    time_of_day,
+    hour,
+    day_of_week
     ) = (
-      $1, $2, $3
-    ) WHERE id = $4;"
-    values = [@time_slot_id, @film_id, @capacity, @id]
+      $1, $2, $3, $4, $5
+    ) WHERE id = $6;"
+    values = [@film_id, @capacity, @time_of_day, @hour, @day_of_week, @id]
     SqlRunner.run(sql, values)
   end
 
@@ -68,12 +73,6 @@ class Screening
     return Film.new(result)
   end
 
-  def time_slots()
-    sql = "SELECT * FROM time_slots WHERE id = $1;"
-    values = [@time_slot_id]
-    result = SqlRunner.run(sql, values).first
-    return TimeSlot.new(result)
-  end
 
   def customers()
     sql = "SELECT customers.* FROM customers INNER JOIN tickets ON customers.id = tickets.customer_id WHERE tickets.film_id = $1;"
@@ -89,9 +88,14 @@ class Screening
   end
 
 #functions still to write
-  def most_popular_film()
+  def self.most_popular()
+  
   end
 
   def tickets
+    sql = "SELECT tickets.* FROM tickets WHERE film_id = $1;"
+    values = [@film_id]
+    results = SqlRunner.run(sql, values)
+    return results.map {|ticket| Ticket.new(ticket)}
   end
 end

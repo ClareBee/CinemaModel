@@ -80,11 +80,13 @@ class Ticket
     return Screening.new(screening)
   end
 
-  def sell_ticket(customer, film, screening)
+#this was an alternative function to customer.buy_ticket
+  def sell(customer, screening)
     if screening.capacity > 0
-      customer.funds -= film.price
+      customer.funds -= screening.films.price
       customer.update
       screening.capacity -= 1
+      screening.update
       sql = "INSERT INTO tickets (
       film_id,
       customer_id
@@ -93,7 +95,7 @@ class Ticket
       $1, $2
       )
       RETURNING id;"
-      values = [film.id, customer.id]
+      values = [screening.films.id, customer.id]
       result = SqlRunner.run(sql, values).first
       @id = result['id'].to_i
     else
