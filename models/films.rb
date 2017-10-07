@@ -3,7 +3,7 @@ require_relative ("../db/sql_runner")
 class Film
 
   attr_reader :id
-  attr_accessor :title, :genre, :price
+  attr_accessor :title, :genre, :rating, :price
 
   def initialize(details)
     @id = details['id'].to_i
@@ -17,12 +17,13 @@ class Film
     sql = "INSERT INTO films(
     title,
     genre,
+    rating,
     price
     ) VALUES (
-    $1, $2, $3
+    $1, $2, $3, $4
     )
     RETURNING id;"
-    values = [@title, @genre, @price]
+    values = [@title, @genre, @rating, @price]
     film = SqlRunner.run(sql, values).first
     @id = film['id'].to_i
   end
@@ -34,7 +35,7 @@ class Film
     return result.map {|film| Film.new(film)}
   end
 
-  def find(id)
+  def self.find(id)
     sql = "SELECT * FROM films WHERE id = $1;"
     values = [id]
     result = SqlRunner.run(sql, values)
@@ -48,9 +49,9 @@ class Film
     title,
     price)
     = (
-      $1, $2, $3
-    ) WHERE id = $4;"
-    values = [@title, @genre, @price, @id]
+      $1, $2, $3, $4
+    ) WHERE id = $5;"
+    values = [@title, @genre, @rating, @price, @id]
     SqlRunner.run(sql, values)
   end
 
@@ -123,9 +124,11 @@ end
   def ticket_count
     sql = "SELECT COUNT(id) FROM tickets WHERE film_id = $1;"
     values = [@id]
-    return SqlRunner.run(sql, values)
+    results = SqlRunner.run(sql, values)
+    results_hash = results.first
+    return results_hash['count']
   end
-#still to write 
+#still to write
   def popular_screening
   end
 end

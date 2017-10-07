@@ -10,7 +10,7 @@ class Customer
     @id = details['id'].to_i
     @name = details['name']
     @funds = details['funds'].to_i
-    @tickets = []
+    # @tickets = []
   end
 
 #create

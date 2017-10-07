@@ -76,11 +76,15 @@ class Screening
 
   def customers()
     sql = "SELECT customers.* FROM customers INNER JOIN tickets ON customers.id = tickets.customer_id WHERE tickets.film_id = $1;"
-    values = [@id]
+    values = [@film_id]
     result = SqlRunner.run(sql, values)
     return result.map {|customer| Customer.new(customer)}
   end
 
+  def audience_size()
+      customers.length
+  end
+  
   def update_capacity()
     @capacity -= customers.length
     update()
@@ -88,8 +92,16 @@ class Screening
   end
 
 #functions still to write
-  def self.most_popular()
-  
+  def self.popular(film)
+     #find the number of customers for each screening of a given film and return the largest
+
+  end
+
+  def self.customers(film)
+    sql = "SELECT COUNT(customers.id) FROM customers INNER JOIN tickets ON customers.id = tickets.customer_id WHERE tickets.film_id = $1;"
+    values = [film]
+    result = SqlRunner.run(sql, values)
+    return result.map {|customer| Customer.new(customer)}
   end
 
   def tickets
