@@ -3,11 +3,10 @@ require_relative ("../models/customers")
 require_relative ("../models/films")
 require_relative ("../models/screenings")
 require_relative ("../models/tickets")
-require_relative ("../models/time_slots")
+
 
 Customer.delete_all
 Film.delete_all
-TimeSlot.delete_all
 Screening.delete_all
 Ticket.delete_all
 
@@ -28,6 +27,18 @@ customer3 = Customer.new({
   'funds' => 20
 })
 customer3.save()
+
+customer4 = Customer.new({
+  'name' => "Christopher Jones",
+  'funds' => 25
+  })
+customer4.save()
+
+customer5 = Customer.new({
+  'name' => "Sarah Jones",
+  'funds' => 20
+  })
+customer5.save()
 
 film1 = Film.new({
   'title' => "Casablanca",
@@ -53,33 +64,104 @@ film3 = Film.new({
 })
 film3.save()
 
-timeslot1 = TimeSlot.new({
-  'time_of_day' => "morning",
-  'hour' => '10:00:00',
-  'day_of_week' => "Monday"
-})
-timeslot1.save()
+film4 = Film.new({
+  'title' => "The Glass Castle",
+  'genre' => "drama",
+  'rating' => "PG",
+  'price' => 5
+  })
+film4.save()
 
-timeslot2 = TimeSlot.new({
-  'time_of_day' => "afternoon",
-  'hour' => '14:00:00',
-  'day_of_week' => "Tuesday"
-})
-timeslot2.save()
 
 screening1 = Screening.new({
     'film_id' => film1.id,
-    'time_slot_id' => timeslot1.id,
-    'capacity' => 20
+    'capacity' => 20,
+    'time_of_day' => "afternoon",
+    'hour' => '14:00:00',
+    'day_of_week' => "Monday"
 })
 screening1.save()
 
 screening2 = Screening.new({
   'film_id' => film2.id,
-  'time_slot_id' => timeslot2.id,
-  'capacity' => 30
+  'capacity' => 30,
+  'time_of_day' => "morning",
+  'hour' => '10:00:00',
+  'day_of_week' => "Tuesday"
 })
 screening2.save()
+
+screening3 = Screening.new({
+  'film_id' => film2.id,
+  'capacity' => 30,
+  'time_of_day' => "afternoon",
+  'hour' => '14:00:00',
+  'day_of_week' => "Tuesday"
+})
+screening3.save()
+
+screening4 = Screening.new({
+  'film_id' => film3.id,
+  'capacity' => 20,
+  'time_of_day' => "evening",
+  'hour' => '20:00:00',
+  'day_of_week' => "Tuesday"
+})
+screening4.save()
+
+screening5 = Screening.new({
+  'film_id' => film3.id,
+  'capacity' => 30,
+  'time_of_day' => "morning",
+  'hour' => '10:00:00',
+  'day_of_week' => "Wednesday"
+})
+screening5.save()
+
+screening6 = Screening.new({
+  'film_id' => film4.id,
+  'capacity' => 30,
+  'time_of_day' => "evening",
+  'hour' => '20:00:00',
+  'day_of_week' => "Wednesday"
+})
+screening6.save()
+
+screening7 = Screening.new({
+  'film_id' => film4.id,
+  'capacity' => 25,
+  'time_of_day' => "afternoon",
+  'hour' => '12:00:00',
+  'day_of_week' => "Thursday"
+})
+screening7.save()
+
+screening8 = Screening.new({
+  'film_id' => film1.id,
+  'capacity' => 30,
+  'time_of_day' => "evening",
+  'hour' => '20:00:00',
+  'day_of_week' => "Friday"
+})
+screening8.save()
+
+screening9 = Screening.new({
+  'film_id' => film2.id,
+  'capacity' => 30,
+  'time_of_day' => "afternoon",
+  'hour' => '12:00:00',
+  'day_of_week' => "Saturday"
+})
+screening9.save()
+
+screening10 = Screening.new({
+  'film_id' => film2.id,
+  'capacity' => 30,
+  'time_of_day' => "evening",
+  'hour' => '20:00:00',
+  'day_of_week' => "Saturday"
+})
+screening10.save()
 
 ticket1 = Ticket.new({
   'customer_id' => customer1.id,
@@ -99,5 +181,21 @@ ticket3 = Ticket.new({
   })
 ticket3.save()
 
+ticket4 = Ticket.new({
+  'customer_id' => customer3.id,
+  'film_id' => film3.id
+  })
+ticket4.save()
+
+ticket5 = Ticket.new({
+  'customer_id' => customer4.id,
+  'film_id' => film4.id
+  })
+ticket5.save()
+
+ticket6 = Ticket.new({
+  'customer_id' => customer5.id,
+  'film_id' => film4.id
+  })
 binding.pry
 nil

@@ -1,7 +1,6 @@
 DROP TABLE tickets;
 DROP TABLE screenings;
 DROP TABLE films;
-DROP TABLE time_slots;
 DROP TABLE customers;
 
 CREATE TABLE customers(
@@ -19,19 +18,15 @@ CREATE TABLE films(
   price INT4
 );
 
-CREATE TABLE time_slots(
-  id SERIAL4 PRIMARY KEY,
-  time_of_day VARCHAR(255),
-  hour TIME,
-  day_of_week VARCHAR(255)
-);
 
 CREATE TABLE screenings(
   id SERIAL4 PRIMARY KEY,
-  time_slot_id INT4 REFERENCES time_slots(id) ON DELETE CASCADE,
   film_id INT4 REFERENCES films(id) ON DELETE CASCADE,
   capacity INT4,
-  CHECK (capacity > 0)
+  CHECK (capacity > 0),
+  time_of_day VARCHAR(255),
+  hour TIME,
+  day_of_week VARCHAR(255)
 );
 
 CREATE TABLE tickets(
